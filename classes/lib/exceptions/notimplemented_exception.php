@@ -1,0 +1,5 @@
+<?
+class NotImplementedException extends Exception{
+
+}
+?>
