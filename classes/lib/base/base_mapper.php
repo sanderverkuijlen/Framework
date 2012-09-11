@@ -1,9 +1,23 @@
 <?
 abstract class BaseMapper{
 
-    protected $table = '';
+    /**
+     * @var string
+     */
+    protected $table    = '';
 
-    protected $fields = array();
+    /**
+     * @var array
+     */
+    protected $fields   = array();
+
+    public function __construct(){
+
+        $this->fields['id'] = [
+            'type'      => 'int',
+            'required'  => true
+        ];
+    }
 
     /**
      * @param $id
@@ -43,7 +57,7 @@ abstract class BaseMapper{
         $orderby    = "";
         $limit      = "";
 
-        //TODO: fix de select
+        //Select
         foreach($this->fields as $fieldname => $attributes){
 
             if($attributes['encrypted'] === true){
@@ -64,15 +78,19 @@ abstract class BaseMapper{
             unset($fieldSelect);
         }
 
+        //Filters
         if(isset($filters['id'])){
             $values['filter_id'] = $filters['id'];
             $where[] = $this->table.".id = :filter_id";
         }
         //TODO: verschillende soorten filters (encrypted, varchar (LIKE), _in, not_
 
+        //Order
         if($order_column){
             $orderby = "ORDER BY ".$order_column." ".($order_desc ? "DESC" : "ASC").PHP_EOL;
         }
+
+        //Limit
         if($start && $amount){
             $orderby = "ORDER BY ".$order_column." ".($order_desc ? "DESC" : "ASC").PHP_EOL;
         }
@@ -95,7 +113,7 @@ abstract class BaseMapper{
 
         //TODO: run query
 
-        //TODO: create UserModel objects with result
+        //TODO: create BaseModel objects with result
     }
 
     /**

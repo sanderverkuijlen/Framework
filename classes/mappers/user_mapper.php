@@ -4,12 +4,12 @@ class UserMapper extends BaseMapper{
     protected $table = 'user';
 
     protected $fields = array(
-        'email'     =>  [   'type'      => 'varchar',
+        'email'     =>  [   'type'      => 'string',
                             'required'  => true,
                             'unique'    => true
                         ],
         'password'  =>  [
-                            'type'      => 'text',
+                            'type'      => 'string',
                             'required'  => true
                         ]
     );
@@ -37,6 +37,14 @@ class UserMapper extends BaseMapper{
      */
     public function findBySql($sql, $vars){
         throw new NotImplementedException();
+    }
+
+    protected function createObjectFromRow($data){
+
+        $user = new User(   $data['email'],
+                            $data['password']
+                        );
+        return $user;
     }
 }
 ?>

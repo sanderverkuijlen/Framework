@@ -1,5 +1,5 @@
 <?
-class UserModel extends BaseModel{
+class User extends BaseModel{
 
     public $email;
     public $password;
