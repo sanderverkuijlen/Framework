@@ -92,7 +92,7 @@ abstract class BaseMapper{
 
         //Limit
         if($start && $amount){
-            $orderby = "ORDER BY ".$order_column." ".($order_desc ? "DESC" : "ASC").PHP_EOL;
+            $orderby = "ORDER BY ".$start.", ".$amount.PHP_EOL;
         }
 
         $sql = "
