@@ -1,5 +1,5 @@
 <?
-class BaseView{
+abstract class BaseView{
 
     public function __construct(){
     }

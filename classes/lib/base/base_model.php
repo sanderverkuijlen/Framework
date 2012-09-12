@@ -1,5 +1,5 @@
 <?
-class BaseModel{
+abstract class BaseModel{
 
     public $id;
 

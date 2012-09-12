@@ -1,23 +1,19 @@
 <?
 abstract class BaseMapper{
+    use Singleton;
 
-    /**
-     * @var string
-     */
     protected $table    = '';
-
-    /**
-     * @var array
-     */
     protected $fields   = array();
 
-    public function __construct(){
+
+    protected function init(){
 
         $this->fields['id'] = [
             'type'      => 'int',
             'required'  => true
         ];
     }
+
 
     /**
      * @param $id
@@ -34,21 +30,21 @@ abstract class BaseMapper{
      * @param bool $order_desc
      * @return BaseModel|null
      */
-    public function findOne($filters = array(), $order_column = '', $order_desc = false){
+    public function findOne($filters = array(), $orderColumn = '', $orderDesc = false){
 
-        $result = $this->find($filters, $order_column, $order_desc, 1, 1);
+        $result = $this->find($filters, $orderColumn, $orderDesc, 1, 1);
         return $result[0];
     }
 
     /**
      * @param array $filters
-     * @param string $order_column
-     * @param bool $order_desc
+     * @param string $orderColumn
+     * @param bool $orderDesc
      * @param int $start
      * @param int $amount
      * @return array[BaseModel]
      */
-    public function find($filters = array(), $order_column = '', $order_desc = false, $start = null, $amount = null){
+    public function find($filters = array(), $orderColumn = '', $orderDesc = false, $start = null, $count = null){
 
         $values     = array();
         $select     = "";
@@ -83,16 +79,16 @@ abstract class BaseMapper{
             $values['filter_id'] = $filters['id'];
             $where[] = $this->table.".id = :filter_id";
         }
-        //TODO: verschillende soorten filters (encrypted, varchar (LIKE), _in, not_
+        //TODO: verschillende soorten filters (encrypted, varchar (LIKE), _in, not_, _before, _after
 
         //Order
-        if($order_column){
-            $orderby = "ORDER BY ".$order_column." ".($order_desc ? "DESC" : "ASC").PHP_EOL;
+        if($orderColumn){
+            $orderby = "ORDER BY ".$orderColumn." ".($orderDesc ? "DESC" : "ASC").PHP_EOL;
         }
 
         //Limit
-        if($start && $amount){
-            $orderby = "ORDER BY ".$order_column." ".($order_desc ? "DESC" : "ASC").PHP_EOL;
+        if($start && $count){
+            $limit = "LIMIT ".$start.", ".$count.PHP_EOL;
         }
 
         $sql = "
@@ -124,19 +120,33 @@ abstract class BaseMapper{
     abstract public function save(BaseModel $model);
 
     /**
-     * @abstract
      * @param BaseModel $model
      * @throws ValidationException, SqlException
      */
-    abstract public function delete(BaseModel $model);
+    public function delete(BaseModel $model){
+
+        $values = [
+            'id' => $model->id
+        ];
+        $sql = "
+            DELETE FROM
+                ".$this->table."
+            WHERE
+                id = :id";
+
+        //TODO: run query
+    }
 
     /**
      * @param $sql
      * @param $vars
+     * @return array[BaseModel]
      * @throws NotImplementedException, SqlException
      */
     public function findBySql($sql, $vars){
         throw new NotImplementedException();
+
+        //TODO: run query
     }
 }
 ?>

@@ -20,6 +20,7 @@ class UserMapper extends BaseMapper{
      */
     public function save(BaseModel $model){
 
+        $model->id = 1;
     }
 
     /**

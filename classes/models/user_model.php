@@ -1,5 +1,6 @@
-<?
+<?php
 class User extends BaseModel{
+    use Mapped;
 
     public $email;
     public $password;
@@ -11,6 +12,5 @@ class User extends BaseModel{
         $this->email    = $email;
         $this->password = $password;
     }
-
 }
 ?>
