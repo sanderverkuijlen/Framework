@@ -17,6 +17,9 @@
 
     //Other
     $classMap['Router']                 = 'classes/lib/router.php';
+    $classMap['DbCon']                  = 'classes/lib/db/dbcon.php';
+    $classMap['dbPDO']                  = 'classes/lib/db/pdo.php';
+    $classMap['dbPDOStatement']         = 'classes/lib/db/pdo.php';
     $classMap['ValidationException']    = 'classes/lib/exceptions/validation_exception.php';
     $classMap['SqlException']           = 'classes/lib/exceptions/sql_exception.php';
     $classMap['NotImplementedException']= 'classes/lib/exceptions/notimplemented_exception.php';
@@ -24,4 +27,5 @@
     //Traits
     $classMap['Singleton']              = 'classes/lib/traits/singleton.php';
     $classMap['Mapped']                 = 'classes/lib/traits/mapped.php';
+    $classMap['Db']                     = 'classes/lib/traits/db.php';
 ?>

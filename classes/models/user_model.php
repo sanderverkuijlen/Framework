@@ -1,4 +1,10 @@
 <?php
+/**
+ * @method static User get($id)
+ * @method static User findOne($id)
+ * @method static array[User] find($id)
+ * @method static array[User] findBySql($id)
+ */
 class User extends BaseModel{
     use Mapped;
 
