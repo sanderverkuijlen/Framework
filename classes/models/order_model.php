@@ -40,5 +40,17 @@ class Order extends BaseModel{
         }
         return $this->products;
     }
+
+    public function addProduct(Product $product){
+
+        $mapper = new OrderMapper();
+        $mapper->addAssociation($this, $product, 'products');
+    }
+
+    public function removeProduct(Product $product){
+
+        $mapper = new OrderMapper();
+        $mapper->removeAssociation($this, $product, 'products');
+    }
 }
 ?>

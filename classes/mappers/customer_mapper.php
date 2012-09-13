@@ -1,7 +1,7 @@
 <?
 class CustomerMapper extends BaseMapper{
 
-    public $table = 'customer';
+    public $table = 'customers';
 
     public $fields = array(
         'name'      =>  [
@@ -18,7 +18,8 @@ class CustomerMapper extends BaseMapper{
                         ],
         'orders'  =>    [
                             'type'          => TypeEnum::ASSOCIATION_HAS_MANY,
-                            'class'         => 'order',
+                            'class'         => 'Order',
+                            'associated'    => 'products',
                             'field'         => 'customer'
                         ]
     );

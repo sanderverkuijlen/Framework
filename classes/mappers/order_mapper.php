@@ -1,18 +1,19 @@
 <?
 class OrderMapper extends BaseMapper{
 
-    public $table = 'order';
+    public $table = 'orders';
 
     public $fields = array(
         'customer_id'  =>  [
                             'type'          => TypeEnum::ASSOCIATION_HAS_ONE,
-                            'class'         => 'customer',
+                            'class'         => 'Customer',
                             'field'         => 'orders'
                         ],
         'products'  =>  [
                             'type'          => TypeEnum::ASSOCIATION_HAS_MANY,
-                            'class'         => 'product',
-                            'field'         => 'orders'
+                            'class'         => 'Product',
+                            'associated'    => 'orders',
+                            'field'         => 'order_id'
                         ],
         'date'      =>  [
                             'type'          => TypeEnum::DATE

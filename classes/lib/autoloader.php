@@ -48,6 +48,22 @@ class ClassLoader{
             throw new ClassNotFoundException('Failed to load class: '.$className);
         }
     }
+
+    /**
+     * @static
+     * @param $className
+     * @return bool
+     * @throws ClassNotFoundException
+     */
+    public function classExists($className){
+
+        if(!file_exists(FILE_ROOT.self::$classMap[$className])){
+
+            throw new ClassNotFoundException('Failed to load class: '.$className);
+        }
+
+        return true;
+    }
 }
 
 function __autoload($className){

@@ -1,8 +1,12 @@
 <?php
-$path = '../';
+$includePath = '../';
 
-require_once($path.'lib/head.php');
+require_once($includePath.'lib/head.php');
 
+
+$phone = new Product('iPhone 4s',       'Apple inc.', 599.99);
+$phone->save();
+$phone->delete();
 
 $phone = new Product('iPhone 5',        'Apple inc.', 599.99);
 $phone->save();
@@ -17,15 +21,21 @@ $customer->save();
 $order = new Order($customer->id, date('d-m-Y'));
 $order->save();
 
-//TODO: goeie manier bedenken om objecten te (ont-)koppelen in NN relaties
+$order->addProduct($phone);
+$order->addProduct($cover);
+
+$order->removeProduct($cover);
 
 
 
 $customer   = Customer::get($customer->id);
+//echo printR($customer);
+
 $orders     = $customer->orders();
 
-echo printR($customer);
-echo printR($orders);
-
-//TODO: goeie manier bedenken om objecten op te halen op basis van NN relaties
+/* @var $order Order */
+foreach($orders as $order){
+    //echo printR($order);
+    //echo printR($order->products());
+}
 ?>

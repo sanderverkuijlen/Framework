@@ -5,12 +5,11 @@ trait Mapped{
      * @static
      * @param $id
      * @return BaseModel
+     * @throws ClassNotFoundException, SQLException
      */
-    static function get($id){
+    static public function get($id){
 
-        /* @var $mapper BaseMapper */
-        $className = get_called_class().'Mapper';
-        $mapper = new $className;
+        $mapper = BaseMapper::getMapperForClass(get_called_class());
         return $mapper->get($id);
     }
 
@@ -20,12 +19,11 @@ trait Mapped{
      * @param string $orderColumn
      * @param bool $orderDesc
      * @return BaseModel
+     * @throws ClassNotFoundException, SQLException
      */
-    static function findOne($filters = array(), $orderColumn = '', $orderDesc = false){
+    static public function findOne($filters = array(), $orderColumn = '', $orderDesc = false){
 
-        /* @var $mapper BaseMapper */
-        $className = get_called_class().'Mapper';
-        $mapper = new $className;
+        $mapper = BaseMapper::getMapperForClass(get_called_class());
         return $mapper->findOne($filters, $orderColumn, $orderDesc);
     }
 
@@ -37,12 +35,11 @@ trait Mapped{
      * @param int $start
      * @param int $count
      * @return array[BaseModel]
+     * @throws ClassNotFoundException, SQLException
      */
-    static function find($filters = array(), $orderColumn = '', $orderDesc = false, $start = null, $count = null){
+    static public function find($filters = array(), $orderColumn = '', $orderDesc = false, $start = null, $count = null){
 
-        /* @var $mapper BaseMapper */
-        $className = get_called_class().'Mapper';
-        $mapper = new $className;
+        $mapper = BaseMapper::getMapperForClass(get_called_class());
         return $mapper->find($filters, $orderColumn, $orderDesc, $start, $count);
     }
 
@@ -51,34 +48,29 @@ trait Mapped{
      * @param $sql
      * @param $vars
      * @return array[BaseModel]
+     * @throws ClassNotFoundException, SQLException
      */
-    static function findBySql($sql, $vars){
+    static public function findBySql($sql, $vars){
 
-        /* @var $mapper BaseMapper */
-        $className = get_called_class().'Mapper';
-        $mapper = new $className;
+        $mapper = BaseMapper::getMapperForClass(get_called_class());
         return $mapper->findBySql($sql, $vars);
     }
 
     /**
-     * @throws ValidationException
+     * @throws ValidationException, ClassNotFoundException, SQLException
      */
-    function save(){
+    public function save(){
 
-        /* @var $mapper BaseMapper */
-        $className = get_called_class().'Mapper';
-        $mapper = new $className;
+        $mapper = BaseMapper::getMapperForClass(get_called_class());
         $mapper->save($this);
     }
 
     /**
-     * @throws ValidationException
+     * @throws ValidationException, ClassNotFoundException, SQLException
      */
-    function delete(){
+    public function delete(){
 
-        /* @var $mapper BaseMapper */
-        $className = get_called_class().'Mapper';
-        $mapper = new $className;
+        $mapper = BaseMapper::getMapperForClass(get_called_class());
         $mapper->delete($this);
     }
 }

@@ -235,6 +235,51 @@ abstract class BaseMapper{
         $this->dbCon()->query($sql, $values);
     }
 
+    public function addAssociation(BaseModel $model, BaseModel $associate, $field){
+
+        $table      = $this->getAssociationTable($field);
+
+        $attributes = $this->fields[$field];
+        $opposite   = $this->getOppositeAssociation($field);
+
+        $values = [
+            $attributes['field']    => $model->id,
+            $opposite['field']      => $associate->id
+        ];
+
+        $sql = "
+            REPLACE INTO
+                `".$table."`
+            SET
+                `".$attributes['field']."` = :".$attributes['field'].",
+                `".$opposite['field']."`   = :".$opposite['field'];
+
+        $this->dbCon()->query($sql, $values);
+    }
+
+    public function removeAssociation(BaseModel $model, BaseModel $associate, $field){
+
+        $table      = $this->getAssociationTable($field);
+
+        $attributes = $this->fields[$field];
+        $opposite   = $this->getOppositeAssociation($field);
+
+        $values = [
+            $attributes['field']    => $model->id,
+            $opposite['field']      => $associate->id
+        ];
+
+        $sql = "
+            DELETE FROM
+                `".$table."`
+            WHERE
+                `".$attributes['field']."` = :".$attributes['field']."
+            AND
+                `".$opposite['field']."`   = :".$opposite['field'];
+
+        $this->dbCon()->query($sql, $values);
+    }
+
 
     /**
      * @abstract
@@ -251,29 +296,71 @@ abstract class BaseMapper{
     abstract protected function createArrayFromObject(BaseModel $model);
 
 
-    protected function getOppositeAssociation($field){
+    public function getAssociationTable($field){
+
+        $association    = $this->fields[$field];
+
+        //echo printR($association);
+        //echo printR($opposite);
+
+        $parts = array(
+            $association['associated'],
+            $field
+        );
+
+        //Sort the fields so they are always in the same order, regardless of the class from which we look at the association
+        sort($parts);
+
+        return implode('_', $parts);
+    }
+
+    /**
+     * @param $field
+     * @return BaseMapper
+     */
+    protected function getOppositeAssociation($fieldName){
+
+        $attributes = $this->fields[$fieldName];
 
         //If $field isn't an association do nothing
-        if($field['type'] === TypeEnum::ASSOCIATION_HAS_ONE || $field['type'] === TypeEnum::ASSOCIATION_HAS_MANY){
+        if($attributes['type'] === TypeEnum::ASSOCIATION_HAS_ONE || $attributes['type'] === TypeEnum::ASSOCIATION_HAS_MANY){
 
             //If $field['class'] isn't set then we can't do anything
-            if(array_key_exists('class', $field)){
+            if(array_key_exists('class', $attributes)){
 
                 /* @var $mapper BaseMapper */
-                $className = $field['class'].'Mapper';
-                $mapper = new $className;
+                $mapper = self::getMapperForClass($attributes['class']);
 
-                //If $field['field'] isn't set then we can't do anything
-                if(array_key_exists($field['field'], $mapper->fields)){
+                //We can't do anything without a mapper
+                if($mapper !== null){
 
-                    echo $field['class'].'.'.$field['field'].' -> '.$this->table.' = '.$mapper->fields[$field['field']]['type'];
+                    //If $field['field'] isn't set then we can't do anything
+                    if(array_key_exists($attributes['associated'], $mapper->fields)){
 
-                    return $mapper->fields[$field['field']]['type'];
+                        return $mapper->fields[$attributes['associated']];
+                    }
                 }
             }
         }
 
         return null;
+    }
+
+    /**
+     * @param $class
+     * @return BaseMapper
+     * @throws ClassNotFoundException
+     */
+    static public function getMapperForClass($class){
+
+        $class = $class.'Mapper';
+
+        if(ClassLoader::getInstance()->classExists($class)){
+
+            return new $class;
+        }
+
+        return null; //This is just to shut up PhpStorm, ClassLoader->classExists either returns true or throws a ClassNotFoundException
     }
 }
 

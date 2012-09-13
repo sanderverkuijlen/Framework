@@ -1,7 +1,7 @@
 <?
 class ProductMapper extends BaseMapper{
 
-    public $table = 'product';
+    public $table = 'products';
 
     public $fields = array(
         'name'      =>  [
@@ -18,8 +18,9 @@ class ProductMapper extends BaseMapper{
                         ],
         'orders'    =>  [
                             'type'          => TypeEnum::ASSOCIATION_HAS_MANY,
-                            'class'         => 'order',
-                            'field'         => 'products'
+                            'class'         => 'Order',
+                            'associated'    => 'products',
+                            'field'         => 'product_id'
                         ]
     );
 
