@@ -9,7 +9,8 @@ trait Mapped{
     static function get($id){
 
         /* @var $mapper BaseMapper */
-        $mapper = call_user_func(array(get_called_class().'Mapper', 'getInstance'));
+        $className = get_called_class().'Mapper';
+        $mapper = new $className;
         return $mapper->get($id);
     }
 
@@ -23,7 +24,8 @@ trait Mapped{
     static function findOne($filters = array(), $orderColumn = '', $orderDesc = false){
 
         /* @var $mapper BaseMapper */
-        $mapper = call_user_func(array(get_called_class().'Mapper', 'getInstance'));
+        $className = get_called_class().'Mapper';
+        $mapper = new $className;
         return $mapper->findOne($filters, $orderColumn, $orderDesc);
     }
 
@@ -39,7 +41,8 @@ trait Mapped{
     static function find($filters = array(), $orderColumn = '', $orderDesc = false, $start = null, $count = null){
 
         /* @var $mapper BaseMapper */
-        $mapper = call_user_func(array(get_called_class().'Mapper', 'getInstance'));
+        $className = get_called_class().'Mapper';
+        $mapper = new $className;
         return $mapper->find($filters, $orderColumn, $orderDesc, $start, $count);
     }
 
@@ -52,7 +55,8 @@ trait Mapped{
     static function findBySql($sql, $vars){
 
         /* @var $mapper BaseMapper */
-        $mapper = call_user_func(array(get_called_class().'Mapper', 'getInstance'));
+        $className = get_called_class().'Mapper';
+        $mapper = new $className;
         return $mapper->findBySql($sql, $vars);
     }
 
@@ -62,7 +66,8 @@ trait Mapped{
     function save(){
 
         /* @var $mapper BaseMapper */
-        $mapper = call_user_func(array(get_called_class().'Mapper', 'getInstance'));
+        $className = get_called_class().'Mapper';
+        $mapper = new $className;
         $mapper->save($this);
     }
 
@@ -72,7 +77,8 @@ trait Mapped{
     function delete(){
 
         /* @var $mapper BaseMapper */
-        $mapper = call_user_func(array(get_called_class().'Mapper', 'getInstance'));
+        $className = get_called_class().'Mapper';
+        $mapper = new $className;
         $mapper->delete($this);
     }
 }

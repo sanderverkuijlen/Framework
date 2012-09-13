@@ -1,5 +1,5 @@
 <?
-class UserView extends BaseView{
+class CustomerController extends BaseController{
 
     public function __construct(){
     }

@@ -1,4 +1,6 @@
 <?php
+class ClassNotFoundException extends Exception{}
+
 class ClassLoader{
 
     /**
@@ -38,7 +40,13 @@ class ClassLoader{
      * @param $className
      */
     public function loadClass($className){
-        require_once(FILE_ROOT.self::$classMap[$className]);
+
+        if(file_exists(FILE_ROOT.self::$classMap[$className])){
+            require_once(FILE_ROOT.self::$classMap[$className]);
+        }
+        else{
+            throw new ClassNotFoundException('Failed to load class: '.$className);
+        }
     }
 }
 

@@ -1,13 +1,12 @@
 <?
 abstract class BaseMapper{
-    use Singleton;
     use Db;
 
-    protected $table    = '';
-    protected $fields   = array();
+    public $table    = '';
+    public $fields   = array();
 
 
-    protected function init(){
+    public function __construct(){
 
         $this->fields['id'] = [
             'type'      => 'int',
@@ -63,34 +62,39 @@ abstract class BaseMapper{
         //Select
         foreach($this->fields as $fieldname => $attributes){
 
-            if(array_key_exists('encrypted', $attributes) && $attributes['encrypted'] === true){
-                $fieldSelect = "CAST(AES_DECRYPT(".$this->table.".".$fieldname.", :db_encryption_key) AS CHAR)";
-            }
-            else{
-                $fieldSelect = $this->table.".".$fieldname;
+            //HAS_MANY associations aren't part of the select
+            if($attributes['type'] === TypeEnum::ASSOCIATION_HAS_MANY){
+                continue;
             }
 
-            if($attributes['type'] === 'date'){
+            if(array_key_exists('encrypted', $attributes) && $attributes['encrypted'] === true){
+                $fieldSelect = "CAST(AES_DECRYPT(`".$this->table."`.`".$fieldname."`, :db_encryption_key) AS CHAR)";
+            }
+            else{
+                $fieldSelect = "`".$this->table."`.`".$fieldname."`";
+            }
+
+            if($attributes['type'] === TypeEnum::DATE){
                 $fieldSelect = "DATE_FORMAT(".$fieldSelect.", '%d-%m-%Y')";
             }
-            elseif($attributes['type'] === 'datetime'){
+            elseif($attributes['type'] === TypeEnum::DATETIME){
                 $fieldSelect = "DATE_FORMAT(".$fieldSelect.", '%d-%m-%Y %H:%i:%s')";
             }
 
-            $select[] = $fieldSelect." AS ".$fieldname;
+            $select[] = $fieldSelect." AS `".$fieldname."`";
             unset($fieldSelect);
         }
 
         //Filters
         if(isset($filters['id'])){
             $values[$this->table.'_id'] = $filters['id'];
-            $where[] = $this->table.".id = :".$this->table."_id";
+            $where[] = "`".$this->table."`.`id` = :".$this->table."_id";
         }
         //TODO: verschillende soorten filters (encrypted, varchar (LIKE), _in, not_, _before, _after
 
         //Order
         if($orderColumn){
-            $orderby = "ORDER BY ".$orderColumn." ".($orderDesc ? "DESC" : "ASC").PHP_EOL;
+            $orderby = "ORDER BY `".$orderColumn."` ".($orderDesc ? "DESC" : "ASC").PHP_EOL;
         }
 
         //Limit
@@ -102,7 +106,7 @@ abstract class BaseMapper{
             SELECT
                 ".implode(",".PHP_EOL, $select)."
             FROM
-                ".$this->table."
+                `".$this->table."`
 
             ".implode(PHP_EOL, $join)."
 
@@ -110,7 +114,7 @@ abstract class BaseMapper{
 
             ".$orderby."
 
-            GROUP BY ".$this->table.".id
+            GROUP BY `".$this->table."`.id
 
             ".$limit;
 
@@ -131,6 +135,7 @@ abstract class BaseMapper{
      * @throws SqlException
      */
     public function findBySql($sql, $values){
+        $models = array();
 
         $res = $this->dbCon()->query($sql, $values);
         while($data = $this->dbCon()->fetch($res)){
@@ -165,10 +170,10 @@ abstract class BaseMapper{
                 if(!array_key_exists('primary', $attributes) || $attributes['primary'] !== true){
                     $fieldSet = ":".$fieldname;
 
-                    if($attributes['type'] === 'date'){
+                    if($attributes['type'] === TypeEnum::DATE){
                         $fieldSet = "STR_TO_DATE(".$fieldSet.", '%d-%m-%Y')";
                     }
-                    elseif($attributes['type'] === 'datetime'){
+                    elseif($attributes['type'] === TypeEnum::DATETIME){
                         $fieldSet = "STR_TO_DATE(".$fieldSet.", '%d-%m-%Y %H:%i:%s')";
                     }
 
@@ -177,7 +182,7 @@ abstract class BaseMapper{
 
                     }
 
-                    $set[] = $fieldname." = ".$fieldSet;
+                    $set[] = "`".$this->table."`.`".$fieldname."` = ".$fieldSet;
                     unset($fieldSet);
                 }
             }
@@ -189,18 +194,18 @@ abstract class BaseMapper{
             if($model->id > 0){
                 $sql = "
                     UPDATE
-                        ".$this->table."
+                        `".$this->table."`
                     SET
                         ".implode(','.PHP_EOL, $set)."
                     WHERE
-                        id = :id";
+                        ".$this->table.".id = :id";
 
-                $res = $this->dbCon()->query($sql, $values);
+                $this->dbCon()->query($sql, $values);
             }
             else{
                 $sql = "
                     INSERT INTO
-                        ".$this->table."
+                        `".$this->table."`
                     SET
                         ".implode(','.PHP_EOL, $set);
 
@@ -223,7 +228,7 @@ abstract class BaseMapper{
         ];
         $sql = "
             DELETE FROM
-                ".$this->table."
+                `".$this->table."`
             WHERE
                 id = :id";
 
@@ -244,5 +249,43 @@ abstract class BaseMapper{
      * @return array
      */
     abstract protected function createArrayFromObject(BaseModel $model);
+
+
+    protected function getOppositeAssociation($field){
+
+        //If $field isn't an association do nothing
+        if($field['type'] === TypeEnum::ASSOCIATION_HAS_ONE || $field['type'] === TypeEnum::ASSOCIATION_HAS_MANY){
+
+            //If $field['class'] isn't set then we can't do anything
+            if(array_key_exists('class', $field)){
+
+                /* @var $mapper BaseMapper */
+                $className = $field['class'].'Mapper';
+                $mapper = new $className;
+
+                //If $field['field'] isn't set then we can't do anything
+                if(array_key_exists($field['field'], $mapper->fields)){
+
+                    echo $field['class'].'.'.$field['field'].' -> '.$this->table.' = '.$mapper->fields[$field['field']]['type'];
+
+                    return $mapper->fields[$field['field']]['type'];
+                }
+            }
+        }
+
+        return null;
+    }
+}
+
+abstract class TypeEnum{
+    const TEXT                      = 'text';
+    const VARCHAR                   = 'varchar';
+    const INT                       = 'int';
+    const DECIMAL                   = 'decimal';
+    const BOOL                      = 'tinyint';
+    const DATE                      = 'date';
+    const DATETIME                  = 'datetime';
+    const ASSOCIATION_HAS_ONE       = 'association_has_one';    //1-side of an association (1-1, 1-n)
+    const ASSOCIATION_HAS_MANY      = 'association_has_many';   //n-side of an association (n-n, n-1)
 }
 ?>
