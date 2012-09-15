@@ -33,4 +33,3 @@ class Customer extends BaseModel{
         return $this->orders;
     }
 }
-?>

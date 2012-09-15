@@ -33,4 +33,3 @@ class Product extends BaseModel{
         return $this->orders;
     }
 }
-?>

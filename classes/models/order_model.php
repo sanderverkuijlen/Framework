@@ -53,4 +53,3 @@ class Order extends BaseModel{
         $mapper->removeAssociation($this, $product, 'products');
     }
 }
-?>

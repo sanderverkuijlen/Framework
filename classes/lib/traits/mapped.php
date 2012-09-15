@@ -53,7 +53,7 @@ trait Mapped{
     static public function findBySql($sql, $vars){
 
         $mapper = BaseMapper::getMapperForClass(get_called_class());
-        return $mapper->findBySql($sql, $vars);
+        return $mapper->findByQuery($sql, $vars);
     }
 
     /**
@@ -74,4 +74,3 @@ trait Mapped{
         $mapper->delete($this);
     }
 }
-?>

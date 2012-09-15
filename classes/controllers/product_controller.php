@@ -5,4 +5,3 @@ class ProductController extends BaseController{
     }
 
 }
-?>

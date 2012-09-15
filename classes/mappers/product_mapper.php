@@ -1,9 +1,10 @@
 <?
 class ProductMapper extends BaseMapper{
 
-    public $table = 'products';
+    public $collection  = 'products';
 
-    public $fields = array(
+    public $fields      = array(
+
         'name'      =>  [
                             'type'          => TypeEnum::TEXT,
                             'multilanguage' => true
@@ -17,10 +18,10 @@ class ProductMapper extends BaseMapper{
                             'encrypted'     => true
                         ],
         'orders'    =>  [
-                            'type'          => TypeEnum::ASSOCIATION_HAS_MANY,
+                            'type'          => TypeEnum::ASSOCIATION_N_N,
                             'class'         => 'Order',
-                            'associated'    => 'products',
-                            'field'         => 'product_id'
+                            'field'         => 'products',
+                            'column'        => 'product_id'
                         ]
     );
 
@@ -28,7 +29,7 @@ class ProductMapper extends BaseMapper{
      * @param array $data
      * @return Product
      */
-    protected function createObjectFromRow(array $data){
+    public function createObjectFromArray(array $data){
 
         $product = new Product(     $data['name'],
                                     $data['brand'],
@@ -42,7 +43,7 @@ class ProductMapper extends BaseMapper{
      * @param Product $product
      * @return array
      */
-    protected function createArrayFromObject(BaseModel $product){
+    public function createArrayFromObject(BaseModel $product){
         /* @var $product Product */
 
         return [
@@ -53,4 +54,3 @@ class ProductMapper extends BaseMapper{
         ];
     }
 }
-?>

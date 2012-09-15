@@ -1,9 +1,10 @@
 <?
 class CustomerMapper extends BaseMapper{
 
-    public $table = 'customers';
+    public $collection  = 'customers';
 
-    public $fields = array(
+    public $fields      = array(
+        
         'name'      =>  [
                             'type'          => TypeEnum::TEXT,
                             'encrypted'     => true
@@ -17,10 +18,10 @@ class CustomerMapper extends BaseMapper{
                             'encrypted'     => true
                         ],
         'orders'  =>    [
-                            'type'          => TypeEnum::ASSOCIATION_HAS_MANY,
+                            'type'          => TypeEnum::ASSOCIATION_1_N,
                             'class'         => 'Order',
-                            'associated'    => 'products',
-                            'field'         => 'customer'
+                            'field'         => 'customer_id',
+                            'column'        => 'customer_id'
                         ]
     );
 
@@ -28,7 +29,7 @@ class CustomerMapper extends BaseMapper{
      * @param array $data
      * @return Customer
      */
-    protected function createObjectFromRow(array $data){
+    public function createObjectFromArray(array $data){
 
         $customer = new Customer(   $data['name'],
                                     $data['email'],
@@ -42,14 +43,14 @@ class CustomerMapper extends BaseMapper{
      * @param Customer $customer
      * @return array
      */
-    protected function createArrayFromObject(BaseModel $customer){
+    public function createArrayFromObject(BaseModel $customer){
         /* @var $customer Customer */
 
         return [
             'id'        => $customer->id,
+            'name'      => $customer->name,
             'email'     => $customer->email,
             'password'  => $customer->password
         ];
     }
 }
-?>

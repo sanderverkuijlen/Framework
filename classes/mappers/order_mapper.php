@@ -1,19 +1,21 @@
 <?
 class OrderMapper extends BaseMapper{
 
-    public $table = 'orders';
+    public $collection  = 'orders';
 
-    public $fields = array(
+    public $fields      = array(
+        
         'customer_id'  =>  [
-                            'type'          => TypeEnum::ASSOCIATION_HAS_ONE,
+                            'type'          => TypeEnum::ASSOCIATION_N_1,
                             'class'         => 'Customer',
-                            'field'         => 'orders'
+                            'field'         => 'orders',
+                            'column'        => 'order_id'
                         ],
         'products'  =>  [
-                            'type'          => TypeEnum::ASSOCIATION_HAS_MANY,
+                            'type'          => TypeEnum::ASSOCIATION_N_N,
                             'class'         => 'Product',
-                            'associated'    => 'orders',
-                            'field'         => 'order_id'
+                            'field'         => 'orders',
+                            'column'        => 'order_id'
                         ],
         'date'      =>  [
                             'type'          => TypeEnum::DATE
@@ -30,7 +32,7 @@ class OrderMapper extends BaseMapper{
      * @param array $data
      * @return Order
      */
-    protected function createObjectFromRow(array $data){
+    public function createObjectFromArray(array $data){
 
         $order = new Order(     $data['customer_id'],
                                 $data['date'],
@@ -43,7 +45,7 @@ class OrderMapper extends BaseMapper{
      * @param Order $order
      * @return array
      */
-    protected function createArrayFromObject(BaseModel $order){
+    public function createArrayFromObject(BaseModel $order){
         /* @var $order Order */
 
         return [
@@ -53,4 +55,3 @@ class OrderMapper extends BaseMapper{
         ];
     }
 }
-?>

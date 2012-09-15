@@ -5,4 +5,3 @@ class ProductView extends BaseView{
     }
 
 }
-?>

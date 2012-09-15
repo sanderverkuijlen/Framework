@@ -5,4 +5,3 @@ abstract class BaseController{
     }
 
 }
-?>

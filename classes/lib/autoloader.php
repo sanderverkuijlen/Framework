@@ -57,12 +57,7 @@ class ClassLoader{
      */
     public function classExists($className){
 
-        if(!file_exists(FILE_ROOT.self::$classMap[$className])){
-
-            throw new ClassNotFoundException('Failed to load class: '.$className);
-        }
-
-        return true;
+        return file_exists(FILE_ROOT.self::$classMap[$className]);
     }
 }
 
@@ -70,4 +65,3 @@ function __autoload($className){
     $oOL = ClassLoader::getInstance();
     $oOL->loadClass($className);
 }
-?>

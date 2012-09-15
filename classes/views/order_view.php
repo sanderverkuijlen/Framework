@@ -5,4 +5,3 @@ class OrderView extends BaseView{
     }
 
 }
-?>

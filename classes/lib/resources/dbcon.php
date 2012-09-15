@@ -1,12 +1,11 @@
 <?php
 
 class DbCon{
-    use Singleton;
 
-    protected $hostname = DB_HOSTNAME;
-    protected $dbName   = DB_NAME;
-    protected $dbUser 	= DB_USER;
-    protected $dbPwd 	= DB_PASSWORD;
+    protected $hostname = '';
+    protected $dbName   = '';
+    protected $dbUser 	= '';
+    protected $dbPwd 	= '';
 
     /**
      * @var dbPDO
@@ -14,7 +13,11 @@ class DbCon{
     protected $pdo		= null;
 
 
-    private function __construct(){
+    public function __construct($hostname, $dbName, $dbUser, $dbPwd){
+        $this->hostname = $hostname;
+        $this->dbName   = $dbName;
+        $this->dbUser   = $dbUser;
+        $this->dbPwd    = $dbPwd;
 
         $this->dbConnect();
     }
@@ -39,7 +42,7 @@ class DbCon{
      * @param $sql
      * @param array $values
      * @return dbPDOStatement
-     * @throws SqlException
+     * @throws QueryException
      */
     public function query($sql, $values = array()){
 
@@ -53,7 +56,7 @@ class DbCon{
         }
         catch(PDOException $e){
 
-            throw new SqlException($e->getMessage(), $pdoStmt->getSql());
+            throw new QueryException($e->getMessage(), $pdoStmt->getSql());
         }
     }
 
@@ -154,4 +157,3 @@ class DbCon{
         return $pdoStmt;
     }
 }
-?>

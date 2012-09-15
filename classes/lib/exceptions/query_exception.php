@@ -1,5 +1,5 @@
 <?
-class SqlException extends Exception{
+class QueryException extends Exception{
 
     /**
      * @var string
@@ -23,4 +23,3 @@ class SqlException extends Exception{
         return $this->query;
     }
 }
-?>

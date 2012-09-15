@@ -2,4 +2,3 @@
 class NotImplementedException extends Exception{
 
 }
-?>
