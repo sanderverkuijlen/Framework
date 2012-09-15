@@ -20,8 +20,7 @@ abstract class BaseMapper{
         }
 
         $this->fields['id'] = [
-            'type'      => TypeEnum::INT,
-            'primary'   => true
+            'type'      => TypeEnum::ID
         ];
     }
 

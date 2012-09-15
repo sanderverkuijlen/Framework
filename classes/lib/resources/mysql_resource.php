@@ -170,8 +170,8 @@ class MysqlResource extends Resource{
             //If the fieldname isn't in the values it will cause an error if we don't skip it
             if(array_key_exists($fieldname, $values)){
 
-                //Never update de primary key
-                if(!array_key_exists('primary', $attributes) || $attributes['primary'] !== true){
+                //Never update the ID
+                if($attributes['type'] !== TypeEnum::ID){
                     $fieldSet = ":".$fieldname;
 
                     if($attributes['type'] === TypeEnum::DATE){
