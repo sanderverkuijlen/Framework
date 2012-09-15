@@ -90,7 +90,7 @@ class MysqlResource extends Resource{
         $res = $this->dbCon->query($sql, $values);
         while($data = $this->dbCon->fetch($res)){
 
-            $models[] = $mapper->createObjectFromArray($data);
+            $models[] = $mapper->arrayToObject($data);
         }
 
         return $models;
@@ -109,7 +109,7 @@ class MysqlResource extends Resource{
         $res = $this->dbCon->query($query, $values);
         while($data = $this->dbCon->fetch($res)){
 
-            $models[] = $mapper->createObjectFromArray($data);
+            $models[] = $mapper->arrayToObject($data);
         }
 
         return $models;
@@ -160,7 +160,7 @@ class MysqlResource extends Resource{
      */
     public function save(BaseMapper $mapper, BaseModel $model){
 
-        $values = $mapper->createArrayFromObject($model);
+        $values = $mapper->objectToArray($model);
         $values['db_encryption_key'] = $this->encryptionKey;
 
         $set = [];
@@ -344,6 +344,7 @@ class MysqlResource extends Resource{
 
                     $fieldWhere = "`".$associationTable."`.`".$opposite['column']."`";
                 }
+
 
                 if(in_array(ModifierEnum::_IN, $usedModifiers)){
 

@@ -36,6 +36,7 @@ class CustomerMapper extends BaseMapper{
                                     $data['password'],
                                     $data['id']
                                 );
+
         return $customer;
     }
 
@@ -46,7 +47,7 @@ class CustomerMapper extends BaseMapper{
     public function createArrayFromObject(BaseModel $customer){
         /* @var $customer Customer */
 
-        return [
+       return [
             'id'        => $customer->id,
             'name'      => $customer->name,
             'email'     => $customer->email,

@@ -26,12 +26,17 @@ require_once($includePath.'lib/head.php');
 //
 //$order->removeProduct($cover);
 
-for($i = 0; $i < 10; $i++){
-    $start = microtime(true);
 
-    for($j = 0; $j < 1000; $j++){
-        Customer::find(['order_id' => $j]);
-    }
+$customer = Customer::get(1);
+$customer->name = 'Jane Doe';
+$customer->save();
 
-    echo (microtime(true) - $start).'<br>';
-}
+//for($i = 0; $i < 10; $i++){
+//    $start = microtime(true);
+//
+//    for($j = 0; $j < 1000; $j++){
+//        Customer::find(['order_id' => $j]);
+//    }
+//
+//    echo (microtime(true) - $start).'<br>';
+//}

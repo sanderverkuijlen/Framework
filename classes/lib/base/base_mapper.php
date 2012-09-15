@@ -125,6 +125,17 @@ abstract class BaseMapper{
         $this->resource->removeAssociation($this, $model, $associate, $field);
     }
 
+    /**
+     * @param $data
+     * @return BaseModel
+     */
+    public function arrayToObject($data){
+
+        $model = $this->createObjectFromArray($data);
+        $model->__initial = $data;  //Set initial data, we use this later to check for dirty attributes
+
+        return $model;
+    }
 
     /**
      * @abstract
@@ -132,6 +143,21 @@ abstract class BaseMapper{
      * @return BaseModel
      */
     abstract public function createObjectFromArray(array $data);
+
+    public function objectToArray(BaseModel $model){
+        $initial = $model->__initial;
+
+        $data = $this->createArrayFromObject($model);
+
+        foreach($data as $key => $value){
+
+            if(array_key_exists($key, $initial) && $data[$key] == $initial[$key] && $this->fields[$key]['type'] != TypeEnum::ID){
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
+    }
 
     /**
      * @abstract
