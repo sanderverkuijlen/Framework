@@ -5,6 +5,7 @@ require_once($includePath.'lib/head.php');
 
 
 $phone = new Product('iPhone 4s',       'Apple inc.', 599.99);
+$phone->name = 'iPhone 4';
 $phone->save();
 $phone->delete();
 
